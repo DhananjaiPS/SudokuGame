@@ -57,3 +57,25 @@ function isValid(r, c, num) {
 }
 
 
+
+function solveWrong() {
+  // Loop row by row
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+   
+      if (board[r][c] === 0) {
+        for (let num = 1; num <= 9; num++) {
+          // we check validity
+          if (isValid(r, c, num)) {
+            board[r][c] = num; 
+            drawBoard();       // update UI
+          
+            solveWrong();      
+
+          }
+        }
+        return;
+      }
+    }
+  }
+}
