@@ -1,3 +1,5 @@
+let prefillCount = 0;
+const maxPrefill = 2;
 let board = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
   [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -9,8 +11,29 @@ let board = [
   [0, 0, 0, 4, 1, 9, 0, 0, 5],
   [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ];
-
 const boardDiv = document.getElementById("board");
+
+function allowPrefill() {
+  boardDiv.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("cell")) return;
+    const [_, r, c] = e.target.id.split("-").map(Number);
+    if (board[r][c] !== 0) return; 
+    if (prefillCount >= maxPrefill) return;
+
+    const num = prompt("Enter a number (1-9):");
+    const n = Number(num);
+    if (n >= 1 && n <= 9 && isValid(r, c, n)) {
+      board[r][c] = n;
+      updateCell(r, c, n, "fixed");
+      prefillCount++;
+    } else {
+      alert("Invalid number!");
+    }
+  });
+}
+
+allowPrefill();
+drawBoard();
 
 function drawBoard() {
   boardDiv.innerHTML = "";
