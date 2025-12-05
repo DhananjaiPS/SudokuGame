@@ -1,4 +1,3 @@
-
 let board = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
   [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -57,22 +56,32 @@ function isValid(r, c, num) {
 }
 
 
-function solve() {
+async function solve() {
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
       if (board[r][c] === 0) {
         for (let num = 1; num <= 9; num++) {
           if (isValid(r, c, num)) {
-            board[r][c] = num; 
-            drawBoard();
-
-            if (solve()) return true; // recursive call
-            board[r][c] = 0; // backtrack if it fails
+            board[r][c] = num;
+            updateCell(r, c, num, "trying");
+            await sleep(50); // step delay
+            if (await solve()) return true;
+            board[r][c] = 0;
+            updateCell(r, c, "", "backtrack");
+            await sleep(50);
           }
         }
-        return false; // no number fits, trigger backtracking
+        return false;
       }
     }
   }
-  return true; // all cells filled
+  return true;
 }
+
+function updateCell(r, c, val, cls) {
+  const cell = document.getElementById(`cell-${r}-${c}`);
+  cell.textContent = val;
+  cell.className = `cell ${cls}`;
+}
+
+function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
